@@ -401,7 +401,14 @@ void model::assign_types() {
 
 		switch(a.el) {
 			case EL_TYPE_H    : break;
-			case EL_TYPE_C    : x = bonded_to_heteroatom(a) ? XS_TYPE_C_P : XS_TYPE_C_H; break;
+			case EL_TYPE_C    :{
+                if     (a.ad == AD_TYPE_CG0){x = bonded_to_heteroatom(a) ? XS_TYPE_C_P_CG0 : XS_TYPE_C_H_CG0;}
+                else if(a.ad == AD_TYPE_CG1){x = bonded_to_heteroatom(a) ? XS_TYPE_C_P_CG1 : XS_TYPE_C_H_CG1;}
+                else if(a.ad == AD_TYPE_CG2){x = bonded_to_heteroatom(a) ? XS_TYPE_C_P_CG2 : XS_TYPE_C_H_CG2;}
+                else if(a.ad == AD_TYPE_CG3){x = bonded_to_heteroatom(a) ? XS_TYPE_C_P_CG3 : XS_TYPE_C_H_CG3;}
+                else                        {x = bonded_to_heteroatom(a) ? XS_TYPE_C_P : XS_TYPE_C_H;}
+                break;
+            }
 			case EL_TYPE_N    : x = (acceptor && donor_NorO) ? XS_TYPE_N_DA : (acceptor ? XS_TYPE_N_A : (donor_NorO ? XS_TYPE_N_D : XS_TYPE_N_P)); break;
 			case EL_TYPE_O    : x = (acceptor && donor_NorO) ? XS_TYPE_O_DA : (acceptor ? XS_TYPE_O_A : (donor_NorO ? XS_TYPE_O_D : XS_TYPE_O_P)); break;
 			case EL_TYPE_S    : x = XS_TYPE_S_P; break;
@@ -410,7 +417,18 @@ void model::assign_types() {
 			case EL_TYPE_Cl   : x = XS_TYPE_Cl_H; break;
 			case EL_TYPE_Br   : x = XS_TYPE_Br_H; break;
 			case EL_TYPE_I    : x = XS_TYPE_I_H; break;
+			case EL_TYPE_Si   : x = XS_TYPE_Si; break;
+			case EL_TYPE_At   : x = XS_TYPE_At; break;
 			case EL_TYPE_Met  : x = XS_TYPE_Met_D; break;
+            case EL_TYPE_Dummy: {
+                if      (a.ad == AD_TYPE_G0) x = XS_TYPE_G0;
+                else if (a.ad == AD_TYPE_G1) x = XS_TYPE_G1;
+                else if (a.ad == AD_TYPE_G2) x = XS_TYPE_G2;
+                else if (a.ad == AD_TYPE_G3) x = XS_TYPE_G3;
+                else if (a.ad == AD_TYPE_W)  x = XS_TYPE_SIZE; // no W atoms in XS types
+                else VINA_CHECK(false);
+                break;
+            }
 			case EL_TYPE_SIZE : break;
 			default: VINA_CHECK(false);
 		}
